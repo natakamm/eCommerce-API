@@ -25,5 +25,5 @@ app.use("/api/categories", category);
 app.use("/api/products", product);
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost${port}`.bgGreen.black);
+  console.log(`Server running on http://localhost:${port}`.bgGreen.black);
 });
