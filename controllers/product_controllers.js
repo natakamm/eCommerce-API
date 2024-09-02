@@ -33,7 +33,7 @@ const createProduct = async (req, res) => {
         .status(400)
         .json({ message: "One or more categories do not exist." });
     }
-    console.log("Found categories:", existingCategories);
+    //console.log("Found categories:", existingCategories);
 
     // Map over the existingCategories to extract their _id values.
     const categoryIds = existingCategories.map((cat) => cat._id);
@@ -58,7 +58,131 @@ const createProduct = async (req, res) => {
   }
 };
 
+const getOneProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).populate({
+      path: "category",
+      select: "name _id",
+    });
+    if (!product) {
+      return res.status(404).json({ message: "This product doesn´t exist" });
+    }
+    res.status(200).json({ product });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const editProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, category, price } = req.body;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { name, description, category, price },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ message: "A product has been successfully updated:", product });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Product.findById(id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        message: "The product you are trying to delete doesn´t exist !",
+      });
+    }
+    const product = await Product.findByIdAndDelete(id);
+    res
+      .status(200)
+      .json({ message: "The following product has been deleted:", product });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const removeCategoryFromProduct = async (req, res) => {
+  try {
+    const { prod_id, cat_id } = req.params;
+
+    const product = await Product.findById(prod_id);
+    if (!product) {
+      return res.status(404).json({ message: "Product doesn´t exist !" });
+    }
+
+    if (product.category.length === 1) {
+      return res.status(400).json({
+        message:
+          "Category can't be removed because a product needs at least one category!",
+      });
+    }
+
+    // Remove category from the product's category array
+    product.category.pull(cat_id);
+    await product.save();
+
+    // Remove the product from the category's products array
+    const category = await Category.findById(cat_id);
+    if (category) {
+      category.products.pull(prod_id);
+      await category.save();
+    }
+
+    res.status(200).json({
+      message: `The category ${cat_id} has been successfully remove from product ${prod_id} .`,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const addCategoryToProduct = async (req, res) => {
+  try {
+    const { prod_id, cat_id } = req.params;
+    const product = await Product.findById(prod_id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found !" });
+    }
+
+    if (product.category.includes(cat_id)) {
+      return res.status(400).json({
+        message: "Category is already associated with this product!",
+      });
+    }
+
+    product.category.push(cat_id);
+    await product.save();
+
+    const category = await Category.findById(cat_id);
+    if (category) {
+      category.products.push(prod_id);
+      await category.save();
+    }
+
+    res.status(200).json({
+      message: `Category ${cat_id} has been successfully added to product ${prod_id}.`,
+      product,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getAllProducts,
   createProduct,
+  deleteProduct,
+  editProduct,
+  getOneProduct,
+  removeCategoryFromProduct,
+  addCategoryToProduct,
 };
