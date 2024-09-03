@@ -7,6 +7,7 @@ const {
   getOneProduct,
   removeCategoryFromProduct,
   addCategoryToProduct,
+  getAllFromCategory,
 } = require("../controllers/product_controllers");
 const upload = require("../services/upload");
 
@@ -22,5 +23,6 @@ api
   .route("/:prod_id/remove-category/:cat_id")
   .delete(removeCategoryFromProduct);
 api.route("/:prod_id/add-category/:cat_id").put(addCategoryToProduct);
+api.route("/category/:cat_id").get(getAllFromCategory);
 
 module.exports = api;
