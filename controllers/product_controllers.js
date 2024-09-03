@@ -5,7 +5,7 @@ const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate({
       path: "category",
-      select: "name _id",
+      select: "name image _id",
     });
     if (products.length) {
       res.status(200).json({ products });
@@ -21,19 +21,28 @@ const getAllProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
+    //text fields are handled by req.body ( Contains text fields from the form-data request ) while files are handled by Multer in req.file
     const { name, description, price, category } = req.body;
+    const imageURL = req.file ? req.file.path : null;
 
+    //request body, category is being sent as a string ('Clothing'), but your backend code expects category to be an array. So we make it into an array. You can see tha in:
+    //console.log("Request Body:", req.body);
+    //console.log("Uploaded File:", req.file);
+
+    const categories = Array.isArray(category) ? category : [category];
     // `category` is an array. This array contains the names of categories you want to find in the Category collection.
     // Find all documents in the Category collection where the name field is equal to any of the names in the category array.
-    const existingCategories = await Category.find({ name: { $in: category } });
+    const existingCategories = await Category.find({
+      name: { $in: categories },
+    });
+    console.log("Found categories:", existingCategories);
 
     // If the lengths don't match, then it means that one or more categories aren't correct.
-    if (existingCategories.length !== category.length) {
+    if (existingCategories.length !== categories.length) {
       return res
         .status(400)
         .json({ message: "One or more categories do not exist." });
     }
-    //console.log("Found categories:", existingCategories);
 
     // Map over the existingCategories to extract their _id values.
     const categoryIds = existingCategories.map((cat) => cat._id);
@@ -44,6 +53,7 @@ const createProduct = async (req, res) => {
       description,
       price,
       category: categoryIds,
+      image: imageURL,
     });
 
     for (let cat of existingCategories) {
