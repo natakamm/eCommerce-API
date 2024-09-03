@@ -78,6 +78,22 @@ const getOneProduct = async (req, res) => {
   }
 };
 
+const getAllFromCategory = async (req, res) => {
+  try {
+    const { cat_id } = req.params;
+    const products = await Product.find({ category: { $in: cat_id } }).exec();
+    if (!products) {
+      return res
+        .status(200)
+        .json({ message: "No products found in this category ." });
+    } else {
+      res.status(200).json({ products });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -189,4 +205,5 @@ module.exports = {
   getOneProduct,
   removeCategoryFromProduct,
   addCategoryToProduct,
+  getAllFromCategory,
 };
