@@ -2,10 +2,7 @@ const Category = require("../schemas/Category");
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find().populate({
-      path: "products",
-      select: "name _id",
-    });
+    const categories = await Category.find().populate("products");
     if (categories.length) {
       res.status(200).json({ categories });
     } else {
@@ -34,10 +31,7 @@ const createCategory = async (req, res) => {
 const getOneCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await Category.findById(id).populate({
-      path: "products",
-      select: "name description price _id",
-    });
+    const category = await Category.findById(id).populate("products");
     if (category) {
       res.status(200).json({ category });
     } else {

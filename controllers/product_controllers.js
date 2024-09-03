@@ -3,10 +3,7 @@ const Category = require("../schemas/Category");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate({
-      path: "category",
-      select: "name image _id",
-    });
+    const products = await Product.find().populate("category");
     if (products.length) {
       res.status(200).json({ products });
     } else {
@@ -71,10 +68,7 @@ const createProduct = async (req, res) => {
 const getOneProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id).populate({
-      path: "category",
-      select: "name _id",
-    });
+    const product = await Product.findById(id).populate("category");
     if (!product) {
       return res.status(404).json({ message: "This product doesn´t exist" });
     }
