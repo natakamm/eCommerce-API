@@ -18,7 +18,11 @@ const api = express.Router();
 //Multer processes the incoming request, handles the file upload, and makes the file information available under req.file
 //inside the createProduct we check if req.file exists and use its path the file´s URL for the image in the product
 api.route("/").get(getAllProducts).post(upload.single("image"), createProduct);
-api.route("/:id").get(getOneProduct).put(editProduct).delete(deleteProduct);
+api
+  .route("/:id")
+  .get(getOneProduct)
+  .put(upload.single("image"), editProduct)
+  .delete(deleteProduct);
 api
   .route("/:prod_id/remove-category/:cat_id")
   .delete(removeCategoryFromProduct);
