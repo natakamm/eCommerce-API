@@ -98,11 +98,17 @@ const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description, category, price } = req.body;
-    const product = await Product.findByIdAndUpdate(
-      id,
-      { name, description, category, price },
-      { new: true }
-    );
+    const imageURL = req.file ? req.file.path : null;
+    const updateFields = { name, description, category, price };
+    if (imageURL) {
+      updateFields.image = imageURL; // Only update the image if a new one is provided
+    }
+
+    // Find and update the product
+    const product = await Product.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
+
     res
       .status(200)
       .json({ message: "A product has been successfully updated:", product });
