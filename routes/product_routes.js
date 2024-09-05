@@ -25,6 +25,6 @@ api
   .delete(deleteProduct);
 api.route("/:id/categories").post(addCategoryToProduct);
 api.route("/:id/categories/:cat_id").delete(removeCategoryFromProduct);
-api.route("/category/:cat_id").get(getAllFromCategory);
+api.route("/:cat_id").get(getAllFromCategory);
 
 module.exports = api;
