@@ -13,9 +13,6 @@ const getAllCategories = async (req, res) => {
   }
 };
 
-//when use .create-> it cretaes and saves on its own
-//when use new keyword with Schema name then , we need to save also
-
 const createCategory = async (req, res) => {
   try {
     const { name, products } = req.body;
