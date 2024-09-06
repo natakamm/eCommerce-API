@@ -138,9 +138,9 @@ const deleteProduct = async (req, res) => {
 
 const removeCategoryFromProduct = async (req, res) => {
   try {
-    const { prod_id, cat_id } = req.params;
+    const { id, cat_id } = req.params;
 
-    const product = await Product.findById(prod_id);
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product doesn´t exist !" });
     }
@@ -159,12 +159,12 @@ const removeCategoryFromProduct = async (req, res) => {
     // Remove the product from the category's products array
     const category = await Category.findById(cat_id);
     if (category) {
-      category.products.pull(prod_id);
+      category.products.pull(id);
       await category.save();
     }
 
     res.status(200).json({
-      message: `The category ${cat_id} has been successfully remove from product ${prod_id} .`,
+      message: `The category ${cat_id} has been successfully remove from product ${id} .`,
     });
   } catch (error) {
     res.status(500).json(error);
@@ -173,8 +173,10 @@ const removeCategoryFromProduct = async (req, res) => {
 
 const addCategoryToProduct = async (req, res) => {
   try {
-    const { prod_id, cat_id } = req.params;
-    const product = await Product.findById(prod_id);
+    const { id } = req.params;
+    const { cat_id } = req.body;
+
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found !" });
     }
@@ -190,12 +192,12 @@ const addCategoryToProduct = async (req, res) => {
 
     const category = await Category.findById(cat_id);
     if (category) {
-      category.products.push(prod_id);
+      category.products.push(id);
       await category.save();
     }
 
     res.status(200).json({
-      message: `Category ${cat_id} has been successfully added to product ${prod_id}.`,
+      message: `Category ${cat_id} has been successfully added to product ${id}.`,
       product,
     });
   } catch (error) {

@@ -23,10 +23,8 @@ api
   .get(getOneProduct)
   .put(upload.single("image"), editProduct)
   .delete(deleteProduct);
-api
-  .route("/:prod_id/remove-category/:cat_id")
-  .delete(removeCategoryFromProduct);
-api.route("/:prod_id/add-category/:cat_id").put(addCategoryToProduct);
-api.route("/category/:cat_id").get(getAllFromCategory);
+api.route("/:id/categories").post(addCategoryToProduct);
+api.route("/:id/categories/:cat_id").delete(removeCategoryFromProduct);
+api.route("/:cat_id").get(getAllFromCategory);
 
 module.exports = api;
