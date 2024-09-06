@@ -165,6 +165,28 @@ const addProductToOrder = async (req, res) => {
   }
 };
 
+//get orders from username
+
+const getAllOrdersByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch all orders for the specific user
+    const orders = await Order.find({ user: userId })
+      .populate("user")
+      .populate("products.productId");
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error retrieving orders:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+};
+
 //remove Product from Order proving orderId
 const removeProductFromOrder = async (req, res) => {
   try {
@@ -219,4 +241,5 @@ module.exports = {
   deleteOrder,
   addProductToOrder,
   removeProductFromOrder,
+  getAllOrdersByUserId,
 };
