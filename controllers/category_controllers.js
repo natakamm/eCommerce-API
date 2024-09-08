@@ -69,7 +69,7 @@ const deleteCategory = async (req, res) => {
         category,
       });
     } else {
-      res.status(200).json({
+      res.status(409).json({
         message:
           "The category you are trying to delete contains products and hence can´t be deleted !",
       });

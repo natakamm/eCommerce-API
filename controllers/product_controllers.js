@@ -19,14 +19,15 @@ const getAllProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     //text fields are handled by req.body ( Contains text fields from the form-data request ) while files are handled by Multer in req.file
-    const { name, description, price, category } = req.body;
+    const { name, description, price } = req.body;
     const imageURL = req.file ? req.file.path : null;
+    // Check if categories were received and ensure they are in array format
+    let categories = req.body["categories"];
+    if (categories && !Array.isArray(categories)) {
+      categories = [categories]; // Convert single category to array
+    }
 
-    //request body, category is being sent as a string ('Clothing'), but your backend code expects category to be an array. So we make it into an array. You can see tha in:
-    //console.log("Request Body:", req.body);
-    //console.log("Uploaded File:", req.file);
-
-    const categories = Array.isArray(category) ? category : [category];
+    console.log("Parsed categories:", categories); // Log to verify
     // `category` is an array. This array contains the names of categories you want to find in the Category collection.
     // Find all documents in the Category collection where the name field is equal to any of the names in the category array.
     const existingCategories = await Category.find({
