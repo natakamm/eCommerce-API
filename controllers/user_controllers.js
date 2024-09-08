@@ -74,7 +74,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findOneAndDelete(userId);
+    const user = await User.findByIdAndDelete(userId);
     if (!user) {
       res.status(404).json({ message: "No user found to delete" });
     } else {
