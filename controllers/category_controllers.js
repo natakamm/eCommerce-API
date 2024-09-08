@@ -2,10 +2,7 @@ const Category = require("../schemas/Category");
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find().populate({
-      path: "products",
-      select: "name _id",
-    });
+    const categories = await Category.find().populate("products");
     if (categories.length) {
       res.status(200).json({ categories });
     } else {
@@ -31,7 +28,61 @@ const createCategory = async (req, res) => {
   }
 };
 
+const getOneCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findById(id).populate("products");
+    if (category) {
+      res.status(200).json({ category });
+    } else {
+      res.status(404).json({ message: "The category doesn´t exist !" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const editCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { name },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "The following product has ben successfully changed:",
+      category,
+    });
+  } catch (error) {}
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const getCategory = await Category.findById(id);
+    if (getCategory.products.length === 0) {
+      const category = await Category.findByIdAndDelete(id);
+      res.status(200).json({
+        message: "The follwoing category has been deleted:",
+        category,
+      });
+    } else {
+      res.status(200).json({
+        message:
+          "The category you are trying to delete contains products and hence can´t be deleted !",
+      });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getAllCategories,
   createCategory,
+  getOneCategory,
+  editCategory,
+  deleteCategory,
 };
