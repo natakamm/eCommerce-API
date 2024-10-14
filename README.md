@@ -9,7 +9,7 @@ The backend of the e-commerce application follows an MVC (Model-View-Controller)
 - Body validation with JOI
 - Adhere to the following directory structure
 
-``express-api/
+````express-api/
 |- db/
 |   \_ index.js
 |- controllers/
@@ -22,7 +22,7 @@ The backend of the e-commerce application follows an MVC (Model-View-Controller)
 |   \_ userRouter.js
 |- schemas/
 |   \_ userSchemas.js
-\_ index.js``
+\_ index.js````
 
 - CRUD operations on users, product, categories and orders
 - Products cannot be created if category doesn’t exist (this implies an association)
