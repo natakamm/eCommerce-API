@@ -4,6 +4,31 @@ Front-end: https://e-commerce-185fdc.netlify.app/ Back-end: https://ecommerce-ap
 
 The backend of the e-commerce application follows an MVC (Model-View-Controller) pattern using Node.js, MongoDB, and Mongoose. It supports essential functionalities for managing users, products, categories, and orders, all of which reference each other to maintain consistency across the application.
 
+### Features
+- PostgreSQL database with Sequelize models
+- Body validation with JOI
+- Adhere to the following directory structure
+
+``express-api/
+|- db/
+|   \_ index.js
+|- controllers/
+|   \_ users.js
+|- middleware/
+|   \_ somemiddleware.js
+|- models/
+|   \_ User.js
+|- routers/
+|   \_ userRouter.js
+|- schemas/
+|   \_ userSchemas.js
+\_ index.js``
+
+- CRUD operations on users, product, categories and orders
+- Products cannot be created if category doesn’t exist (this implies an association)
+- Orders cannot be created if user and products don’t exist. (this implies an association)
+- Postman collection with sample requests and responses
+
 #### Controllers: The backend includes various controllers that handle different entities in the application:
 
 - category_controllers.js: Manages category creation, deletion, and updates. Categories are connected to products, and deletion is blocked (with a 409 error) if a category still has products associated with it.
