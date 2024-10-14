@@ -1,6 +1,4 @@
-### Deployed Sites:
-
-Front-end: https://e-commerce-185fdc.netlify.app/ Back-end: https://ecommerce-api-k4pz.onrender.com
+# E-Commerce Shop Backend API
 
 The backend of the e-commerce application follows an MVC (Model-View-Controller) pattern using Node.js, MongoDB, and Mongoose. It supports essential functionalities for managing users, products, categories, and orders, all of which reference each other to maintain consistency across the application.
 
